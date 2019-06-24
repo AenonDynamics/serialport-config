@@ -15,11 +15,11 @@ VERSION="0.3.0"
 STTY_BIN=/bin/stty
 
 # confg file
-CONF_FILENAME=serialport.conf
+CONF_FILENAME=/etc/serialport.conf
 
 show_usage(){
     cat << EOF
-Usage: serialport-config <name> <executable> [args...]
+Usage: serialport-config
      --help                  Displays this help
      --version               Displays version
 EOF
