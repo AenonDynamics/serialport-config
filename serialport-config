@@ -9,7 +9,7 @@
 # ----------------------------------------------------------------------
 
 # serialport-config https://github.com/AenonDynamics/serialport-config
-VERSION="0.3.0"
+VERSION="0.1.0"
 
 # binary
 STTY_BIN=/bin/stty
@@ -76,7 +76,7 @@ while read -r line; do
     [[ "$line" =~ ^[[:space:]]*\# ]] && continue
 
     # parse entry
-    if [[ $line =~ ^([[:alnum:]]+)[[:space:]]+([[:digit:]]+)[[:space:]]*$ ]]; then
+    if [[ $line =~ ^([[:alnum:]._-]+)[[:space:]]+([[:digit:]]+)[[:space:]]* ]]; then
         strresult=${BASH_REMATCH[1]}
         echo "setting baudrate of /dev/${BASH_REMATCH[1]} to ${BASH_REMATCH[2]}.."
 
