@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+# ----------------------------------------------------------------------
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+# --
+# Copyright 2018-2019 Andi Dittrich <https://aenon-dynamics.com>
+# ----------------------------------------------------------------------
+
+# serialport-config https://github.com/AenonDynamics/serialport-config
+VERSION="0.3.0"
+
+# binary
+STTY_BIN=/bin/stty
+
+# confg file
+CONF_FILENAME=serialport.conf
+
+show_usage(){
+    cat << EOF
+Usage: serialport-config <name> <executable> [args...]
+     --help                  Displays this help
+     --version               Displays version
+EOF
+    exit 0
+}
+
+show_version(){
+    cat << EOF
+serialport-config
+ - Version: ${VERSION}
+ - License: MPL-2.0 http://mozilla.org/MPL/2.0/
+ - Repository: https://github.com/AenonDynamics/serialport-config
+EOF
+    exit 0
+}
+
+# simple processing
+[ "$1" = "--help" ] && show_usage
+[ "$1" = "--version" ] && show_version
+
+# task config available ?
+[ ! -f "$CONF_FILENAME" ] && { echo >&2 "configuration file <$CONF_FILENAME> not found"; exit 1; }
+
+# @see https://linux.die.net/man/1/stty
+stty_setconfig(){
+    # min 0 | nonblocking io - don't wait for chars
+    # time 0 | read timeout immediately
+    # cs8 | 8 data bits
+    # -cstopb | 1 stop bit
+    # -parenb | no parity bit
+    # clocal | disable modem control signals
+    # -brkint | breaks do not cause an interrupt signal
+    # ignpar | ignore characters with parity errors
+    # -icrnl | not translate carriage return to newline
+    # -ixon | disable XON/XOFF flow control
+    # -imaxbel | no beep and do flush a full input buffer on a character
+    # -opost | no postprocess output
+    # -isig | disable interrupt
+    # -icanon | disable erase, kill, werase, and rprnt special characters
+    # -iexten | disable non-POSIX special characters
+    # -echo | do not echo input chars
+    $STTY_BIN -F $1 $2 \
+        min 0 time 0 cs8 -cstopb -parenb \
+        clocal -brkint ignpar -icrnl -icrnl -ixon \
+        -imaxbel -opost -isig -icanon -iexten -echo 
+}
+
+# parse config file
+while read -r line; do
+    # skip empty lines
+    [[ "$line" =~ ^[[:space:]]*$ ]] && continue
+
+    # skip comments
+    [[ "$line" =~ ^[[:space:]]*\# ]] && continue
+
+    # parse entry
+    if [[ $line =~ ^([[:alnum:]]+)[[:space:]]+([[:digit:]]+)[[:space:]]*$ ]]; then
+        strresult=${BASH_REMATCH[1]}
+        echo "setting baudrate of /dev/${BASH_REMATCH[1]} to ${BASH_REMATCH[2]}.."
+
+        # set config
+        stty_setconfig "/dev/${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
+
+        # success ?
+        if [ $? -ne 0 ]; then
+            echo "- FAILED"
+        else
+            echo "- OK"
+        fi
+    else
+        echo "invalid definiton <$line>"
+    fi
+done < "$CONF_FILENAME"
+
+# success
+exit 0
