@@ -1,5 +1,5 @@
 [Unit]
-Description=stty config
+Description=serialport system configuration
 
 # Start before Network Interfaces coming up
 Before=network-pre.target
@@ -12,7 +12,7 @@ After=local-fs.target
 DefaultDependencies=no
 
 [Service]
-ExecStart=/sbin/serialport-setup
+ExecStart=/sbin/serialport-config
 
 # Just Execute the shell script
 Type=oneshot
