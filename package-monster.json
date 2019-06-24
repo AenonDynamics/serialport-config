@@ -5,8 +5,8 @@
     "description": "captures the command output and sends it via http post",
     "license": "MPL-2.0",
     "author": "Andi Dittrich <opensource@aenon-dynamics.com>",
-    "website": "https://github.com/AenonDynamics/serialport-setup",
-    "bugs": "https://github.com/AenonDynamics/serialport-setup/issues",
+    "website": "https://github.com/AenonDynamics/serialport-config",
+    "bugs": "https://github.com/AenonDynamics/serialport-config/issues",
     "multiversion": false,
     "repository": "public",
     "type": "script",
@@ -24,13 +24,13 @@
         ],
 
         "sbin": [
-            "taskrunner"
+            "serialport-config"
         ],
 
         "files": [
             {
-                "src": "systemd/serialport-setup.service",
-                "dst": "/lib/systemd/system/serialport-setup.service"
+                "src": "systemd/serialport-config.service",
+                "dst": "/lib/systemd/system/serialport-config.service"
             }
         ],
 
