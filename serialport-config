@@ -62,7 +62,7 @@ stty_setconfig(){
     # -iexten | disable non-POSIX special characters
     # -echo | do not echo input chars
     $STTY_BIN -F $1 $2 \
-        min 0 time 0 cs8 -cstopb -parenb \
+        min 1 time 0 cs8 -cstopb -parenb \
         clocal -brkint ignpar -icrnl -icrnl -ixon \
         -imaxbel -opost -isig -icanon -iexten -echo 
 }
